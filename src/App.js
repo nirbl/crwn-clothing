@@ -1,5 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { setCurrentUser } from './redux/user/user.actions';
 
 import './App.css';
 
@@ -35,13 +37,15 @@ import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 );  */
 
 class App extends React.Component {
-  constructor() {
+  // Note !! because of Redux - getting setCurrentUser (as imported)
+  //          -> we don't need the constructor
+  /* constructor() {
     super();
 
     this.state = {
       currentUser: null,
     };
-  }
+  } */
 
   // a method called : "unsubscribeFromAuth"
   unsubscribeFromAuth = null;
@@ -54,6 +58,8 @@ class App extends React.Component {
     });
   } */
   componentDidMount() {
+    const { setCurrentUser } = this.props;
+
     // this.unsubscribeFromAuth = auth.onAuthStateChanged(async (user) => {
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
@@ -61,22 +67,26 @@ class App extends React.Component {
 
         userRef.onSnapshot((snapShot) => {
           //console.log(snapShot.data());
-          this.setState(
+
+          /* this.setState(
             {
-              currentUser: {
-                id: snapShot.id,
-                ...snapShot.data(),
-              },
-            }
-            /* () => {
+              currentUser:{ */
+          setCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data(),
+          });
+          //}
+          /* () => {
               console.log(this.state);
             } */
-          );
+          //);
           //console.log(this.state);
         });
       }
       //createUserProfileDocument(user);
-      this.setState({ currentUser: userAuth });
+      //this.setState({ currentUser: userAuth });
+
+      setCurrentUser(userAuth);
     });
   }
 
@@ -93,7 +103,9 @@ class App extends React.Component {
         {/*   <Header /> */}
         {/* Note: now we will give aware the "header" when the user SignIn /or/ SignOut
                   by giving it the App it's current user state*/}
-        <Header currentUser={this.state.currentUser} />
+
+        {/* <Header currentUser={this.state.currentUser} /> */}
+        <Header />
         <Switch>
           <Route exact path='/' component={HomePage} />
           {/* <Route path='/hats' component={HatsPage} /> */}
@@ -105,4 +117,12 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => ({
+  // "setCurrentUser" = is an action object to return as following
+  // "setCurrentUser(user)" = call an action that pass that 'user' in
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
+
+// we passing 'null' as the first argument' because we don't need
+//     any state to props from our reducer
+export default connect(null, mapDispatchToProps)(App);
