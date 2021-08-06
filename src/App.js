@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { setCurrentUser } from './redux/user/user.actions';
 
@@ -110,12 +110,28 @@ class App extends React.Component {
           <Route exact path='/' component={HomePage} />
           {/* <Route path='/hats' component={HatsPage} /> */}
           <Route path='/shop' component={ShopPage} />
-          <Route path='/signin' component={SignInAndSignUpPage} />
+          {/* <Route path='/signin' component={SignInAndSignUpPage} /> */}
+          <Route
+            exact
+            path='/signin'
+            render={() =>
+              this.props.currentUser ? (
+                <Redirect to='/' />
+              ) : (
+                <SignInAndSignUpPage />
+              )
+            }
+          />
         </Switch>
       </div>
     );
   }
 }
+
+// to avoid singed in user to sign in again / enter the auth path
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   // "setCurrentUser" = is an action object to return as following
@@ -125,4 +141,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 // we passing 'null' as the first argument' because we don't need
 //     any state to props from our reducer
-export default connect(null, mapDispatchToProps)(App);
+
+//export default connect(null, mapDispatchToProps)(App);
+
+// continue rule avoid entered user to sign in again
+export default connect(mapStateToProps, mapDispatchToProps)(App);
