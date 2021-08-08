@@ -4,6 +4,8 @@
   flex-direction: column;
   height: 350px;
   align-items: center;
+  // add Cart styling (2)
+  position: relative;
 
   .image {
     width: 100%;
@@ -11,6 +13,28 @@
     background-size: cover;
     background-position: center;
     margin-bottom: 5px;
+  }
+
+  // add Cart styling (1)
+  .custom-button {
+    width: 80%;
+    opacity: 0.7;
+    position: absolute;
+    top: 255px;
+    // add Cart styling (3)
+    display: none;
+  }
+
+  // add Cart styling (3.1)
+  &:hover {
+    .image {
+      opacity: 0.8;
+    }
+    // add Cart styling (3.2)
+    .custom-button {
+      opacity: 0.85;
+      display: flex;
+    }
   }
 
   .collection-footer {
