@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import { auth } from '../../firebase/firebase.utils';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+import { selectCartHidden } from '../../redux/cart/cart.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 
@@ -41,10 +44,29 @@ const Header = ({ currentUser, hidden }) => (
 
 // this "state" = is a root reducer
 //const mapStateToProps = (state) => ({
-const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
+/* const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
   // currentUser: state.user.currentUser,
   currentUser,
   hidden,
+}); */
+
+// => for selectors :
+/* const mapStateToProps = (state) => ({
+  currentUser: selectCurrentUser(state),
+  hidden: selectCartHidden(state),
+}); */
+
+// Note !! for selectors - but if we have couple selectors -
+//         instead to do it same thing couple of time => we will use our
+//         "createStructuredSelector" call ->
+//          and instead of passing it as a function - we just pass it like so where the
+//          properties that we want, point to the correct selector, and then
+//          "createStructuredSelector" will automatically pass our top of our state
+//          that we get as our 'mapStateToProps' into each subsequent (שלאחר מכן) selector
+
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  hidden: selectCartHidden,
 });
 
 export default connect(mapStateToProps)(Header);
