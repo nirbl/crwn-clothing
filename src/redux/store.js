@@ -4,8 +4,13 @@ import logger from 'redux-logger';
 
 import rootReducer from './root-reducer';
 
-const middlewares = [logger];
-
+// Note !! if we want redux log only ib DEV mode - we will empty the array bracket like : "[]"
+//  And - add the if condition as below
+//const middlewares = [logger];
+const middlewares = [];
+if (process.env.NODE_ENV === 'development') {
+  middlewares.push(logger);
+}
 //const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
 // Note !! here we change it for the "persistStore" :
