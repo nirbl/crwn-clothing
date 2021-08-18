@@ -4,16 +4,23 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
+// **** Note !! Here we continue implement - "Moving our ShopData to Firebase"
+//import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
 
 import './App.css';
 
 import HomePage from './pages/homepage/homepage.component.jsx';
-import ShopPage from './pages/shop/shop.component';
+import ShopPage from './pages/shop/shop.component.jsx';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import CheckoutPage from './pages/checkout/checkout.component';
 
 import Header from './components/header/header.component.jsx';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+// **** Note !! Here we !!change!! by continue implement - "Moving our ShopData to Firebase"
+import {
+  auth,
+  createUserProfileDocument,
+  //addCollectionAndDocuments,
+} from './firebase/firebase.utils';
 
 /* const HatsPage = () => (
   <div>
@@ -62,6 +69,9 @@ class App extends React.Component {
     });
   } */
   componentDidMount() {
+    // *** Note !! Here we !!change!! by continue implement - "Moving our ShopData to Firebase"
+    //      && we delete "collectionsArray"
+    //const { setCurrentUser, collectionsArray } = this.props;
     const { setCurrentUser } = this.props;
 
     // this.unsubscribeFromAuth = auth.onAuthStateChanged(async (user) => {
@@ -75,6 +85,12 @@ class App extends React.Component {
           /* this.setState(
             {
               currentUser:{ */
+          // Note!! whenever the document snapshot object updated =>
+          // because of we set a new user value /OR/ update the value /OR/ delete
+          // =>  it been listened by "setCurrentUser" and !! will pass that snapshot into
+          //  our listener -> what we do is we call our setCurrentUser 'action creator' method
+          //  so our Redux method to set the actual current current user object in our
+          //  redux Reducer ==> that's how we are able to store that on our current user.
           setCurrentUser({
             id: snapShot.id,
             ...snapShot.data(),
@@ -91,6 +107,16 @@ class App extends React.Component {
       //this.setState({ currentUser: userAuth });
 
       setCurrentUser(userAuth);
+      // *** Note !! Here we !!change!! by continue implement - "Moving our ShopData to Firebase"
+      //   & also we here destruction just the properties we want : 'title + items' because we have
+      //already the id-s => this collections array map will be returning us an array of just objects with the values that we want to keep with the same properties we restructured : 'title + items'
+      /* addCollectionAndDocuments(
+        'collections',
+        collectionsArray.map(({ title, items }) => ({
+          title,
+          items,
+        }))
+      ); */
     });
   }
 
@@ -141,6 +167,8 @@ class App extends React.Component {
 // for - createStructuredSelector({})
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  // *** Note !! Here we !!change!! by continue implement - "Moving our ShopData to Firebase"
+  //collectionsArray: selectCollectionsForPreview,
 });
 
 const mapDispatchToProps = (dispatch) => ({

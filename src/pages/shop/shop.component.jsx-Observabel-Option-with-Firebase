@@ -41,49 +41,19 @@ class ShopPage extends React.Component {
     const { updateCollections } = this.props;
     const collectionRef = firestore.collection('collections');
 
-    // **** Note !!   ***
-    // *** ==> !!! Below - 3 rows !!! Here we (use) return Promises
-    //         instead of returning this observable style of object
-    //         In order to still use our collection, instead of using "Snapshot"
-    //         ==> we use is ".get"
-    //        ".get()" => it makes an API call to fetch back the data associated to this "collectionRef",
-    //        which will it be the exact same as the snapshot object that we're getting back from our BackEnd.
-    //        -> the only difference is that instead - now we call ".then(...)"
-    //        (= promise) and we pass our snapshot transformation into this ".then(const collectionsMap...)"
+    this.unsubscribeFromSnapshot = collectionRef.onSnapshot(
+      async (snapshot) => {
+        const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+        updateCollections(collectionsMap);
+        //console.log(collectionsMap);
+        //console.log(snapshot);
 
-    /*  this.unsubscribeFromSnapshot = collectionRef.onSnapshot( snapshot => {
-     const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-      updateCollections(collectionsMap);
-      this.setState({ loading: false }); */
-
-    collectionRef.get().then((snapshot) => {
-      const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-      updateCollections(collectionsMap);
-      this.setState({ loading: false });
-
-      // *****  Note!!!  ****
-      // *****    here instead we making  Making REST calls
-      // *****    we use jere native fetch('...') API by: (from firesore docs)
-      // *****    https://firestore.googleapis.com/v1/projects/YOUR_PROJECT_ID/databases/(default)/documents/
-      // *****    && (Project ID :)  "crwn-db-8fbc2"
-      // ******   => then we're going to get our collections
-      // ******    ".../documents/++ collections" - because we want whole the collection - "collections"
-      // ****** -> we chain with "then.(response => response.json())" => we have to convert our response to json
-
-      /* fetch(
-      'https://firestore.googleapis.com/v1/projects/crwn-db-8fbc2/databases/(default)/documents/collections'
-    )
-      .then((response) => response.json())
-      .then((collections) => console.log(collections)); */
-
-      //console.log(collectionsMap);
-      //console.log(snapshot);
-
-      // Note !! now when we have our state (above), we are just going to make
-      //    sure that after our update collections is called - we'll just call
-      //    this, "this.state" where loading equals false
-      //this.setState({ loading: false });
-    });
+        // Note !! now when we have our state (above), we are just going to make
+        //    sure that after our update collections is called - we'll just call
+        //    this, "this.state" where loading equals false
+        this.setState({ loading: false });
+      }
+    );
   }
   render() {
     const { match } = this.props;

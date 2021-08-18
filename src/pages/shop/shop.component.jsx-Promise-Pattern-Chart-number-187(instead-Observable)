@@ -56,34 +56,34 @@ class ShopPage extends React.Component {
       updateCollections(collectionsMap);
       this.setState({ loading: false }); */
 
-    collectionRef.get().then((snapshot) => {
+    /* collectionRef.get().then((snapshot) => {
       const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
       updateCollections(collectionsMap);
-      this.setState({ loading: false });
+      this.setState({ loading: false }); */
 
-      // *****  Note!!!  ****
-      // *****    here instead we making  Making REST calls
-      // *****    we use jere native fetch('...') API by: (from firesore docs)
-      // *****    https://firestore.googleapis.com/v1/projects/YOUR_PROJECT_ID/databases/(default)/documents/
-      // *****    && (Project ID :)  "crwn-db-8fbc2"
-      // ******   => then we're going to get our collections
-      // ******    ".../documents/++ collections" - because we want whole the collection - "collections"
-      // ****** -> we chain with "then.(response => response.json())" => we have to convert our response to json
+    // *****  Note!!!  ****
+    // *****    here instead we making  Making REST calls
+    // *****    we use jere native fetch('...') API by: (from firesore docs)
+    // *****    https://firestore.googleapis.com/v1/projects/YOUR_PROJECT_ID/databases/(default)/documents/
+    // *****    && (Project ID :)  "crwn-db-8fbc2"
+    // ******   => then we're going to get our collections
+    // ******    ".../documents/++ collections" - because we want whole the collection - "collections"
+    // ****** -> we chain with "then.(response => response.json())" => we have to convert our response to json
 
-      /* fetch(
+    fetch(
       'https://firestore.googleapis.com/v1/projects/crwn-db-8fbc2/databases/(default)/documents/collections'
     )
       .then((response) => response.json())
-      .then((collections) => console.log(collections)); */
+      .then((collections) => console.log(collections));
 
-      //console.log(collectionsMap);
-      //console.log(snapshot);
+    //console.log(collectionsMap);
+    //console.log(snapshot);
 
-      // Note !! now when we have our state (above), we are just going to make
-      //    sure that after our update collections is called - we'll just call
-      //    this, "this.state" where loading equals false
-      //this.setState({ loading: false });
-    });
+    // Note !! now when we have our state (above), we are just going to make
+    //    sure that after our update collections is called - we'll just call
+    //    this, "this.state" where loading equals false
+    //this.setState({ loading: false });
+    //});
   }
   render() {
     const { match } = this.props;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -11,35 +11,55 @@ import { selectCurrentUser } from '../../redux/user/user.selectors';
 
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 
-import './header.styles.scss';
+//import './header.styles.scss';
+import {
+  HeaderContainer,
+  LogoContainer,
+  OptionsContainer,
+  //OptionDiv,
+  OptionLink,
+} from './header.styles';
 
 //const Header = () => (
 //const Header = ({ currentUser }) => (
 const Header = ({ currentUser, hidden }) => (
-  <div className='header'>
-    <Link className='logo-container' to='/'>
+  // <div className='header'>
+  <HeaderContainer>
+    {/*  <Link className='logo-container' to='/'> */}
+    <LogoContainer to='/'>
       <Logo className='logo' />
-    </Link>
-    <div className='options'>
-      <Link className='option' to='/shop'>
-        SHOP
-      </Link>
-      <Link className='option' to='/shop'>
-        CONTACT
-      </Link>
+    </LogoContainer>
+    {/* </Link> */}
+    {/* <div className='options'> */}
+    <OptionsContainer>
+      {/* <Link className='option' to='/shop'> */}
+      <OptionLink to='/shop'>SHOP</OptionLink>
+      {/* </Link> */}
+      {/* <Link className='option' to='/shop'> */}
+      <OptionLink to='/shop'>CONTACT</OptionLink>
+      {/*  </Link> */}
       {currentUser ? (
-        <div className='option' onClick={() => auth.signOut()}>
+        //<div className='option' onClick={() => auth.signOut()}>
+        //<OptionDiv onClick={() => auth.signOut()}>SIGN OUT</OptionDiv>
+
+        // Note !! another option: by "<OptionLink" as(property) and passing in the string of the
+        //    element we want (in this case ='div') /Or/
+        //    even pass a component as={'component'} and omit the import of 'css'
+        <OptionLink as='div' onClick={() => auth.signOut()}>
           SIGN OUT
-        </div>
+        </OptionLink>
       ) : (
-        <Link className='option' to='/signin'>
-          SIGN IN
-        </Link>
+        //</div>
+        /* <Link className='option' to='/signin'> */
+        <OptionLink to='/signin'>SIGN IN</OptionLink>
+
+        /* </Link> */
       )}
       <CartIcon />
-    </div>
+    </OptionsContainer>
     {hidden ? null : <CartDropdown />}
-  </div>
+  </HeaderContainer>
+  //</div>
 );
 
 // this "state" = is a root reducer

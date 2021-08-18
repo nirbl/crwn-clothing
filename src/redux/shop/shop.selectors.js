@@ -20,7 +20,9 @@ export const selectCollections = createSelector(
 
 export const selectCollectionsForPreview = createSelector(
   [selectCollections],
-  (collections) => Object.keys(collections).map((key) => collections[key])
+  //(collections) => Object.keys(collections).map((key) => collections[key])
+  (collections) =>
+    collections ? Object.keys(collections).map((key) => collections[key]) : []
 );
 
 // Note !! We will modified our collections inside of our Reducer to now be an object,
@@ -63,7 +65,10 @@ export const selectCollection = (collectionUrlParam) =>
     //(collections) =>
     // Note !! instead of doing a collection of "find()" -> we will do
     //        "collectionUrlParameter"
-    (collections) => collections[collectionUrlParam]
+
+    /* (collections) => collections[collectionUrlParam] */
+    (collections) => (collections ? collections[collectionUrlParam] : null)
+
     /* collections.find(
       (collection) => collection.id === COLLECTION_ID_MAP[collectionUrlParam]
     ) */
