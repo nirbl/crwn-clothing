@@ -68,7 +68,7 @@ export const addCollectionAndDocuments = async (
   const batch = firestore.batch();
   objectsToAdd.forEach((obj) => {
     //const newDocRef = collectionRef.doc(obj.title);
-    const newDocRef = collectionRef.doc(obj.title);
+    const newDocRef = collectionRef.doc();
     //console.log(newDocRef);
     batch.set(newDocRef, obj);
   });
@@ -106,13 +106,26 @@ export const convertCollectionsSnapshotToMap = (collections) => {
   }, {});
 };
 
+// Note *** Here we implement for Redux-Saga:
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      unsubscribe();
+      resolve(userAuth);
+    }, reject);
+  });
+};
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
 // setup Google Authentication
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+//
+//****  Note 1 - implement for Redux-Saga - change the below 2 rows of declare "provider" and export the "provider"
+//const provider = new firebase.auth.GoogleAuthProvider();
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 //auth.signInWithRedirect(provider).catch(() => {});
 
 export default firebase;

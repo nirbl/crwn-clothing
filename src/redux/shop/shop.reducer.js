@@ -16,15 +16,40 @@ import ShopActionTypes from './shop.types';
 
 const INITIAL_STATE = {
   collections: null,
+  // Note !! adding change for "redux-thunk"
+  isFetching: false,
+  // Note5 !! adding change for "redux-thunk"
+  errorMessage: undefined,
 };
 
 const shopReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case ShopActionTypes.UPDATE_COLLECTIONS:
+    // Note1 !! adding change for "redux-thunk"
+    case ShopActionTypes.FETCH_COLLECTIONS_START:
+      return {
+        ...state,
+        isFetching: true,
+      };
+    // Note2 !! adding change for "redux-thunk"
+    case ShopActionTypes.FETCH_COLLECTIONS_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        collections: action.payload,
+      };
+    // Note3 !! adding change for "redux-thunk"
+    case ShopActionTypes.FETCH_COLLECTIONS_FAILURE:
+      return {
+        ...state,
+        isFetching: false,
+        errorMessage: action.payload,
+      };
+    // Note4 !! remark/delete change for "redux-thunk"
+    /* case ShopActionTypes.UPDATE_COLLECTIONS:
       return {
         ...state,
         collections: action.payload,
-      };
+      }; */
     default:
       return state;
   }

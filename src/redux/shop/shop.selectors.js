@@ -77,3 +77,15 @@ export const selectCollection = (collectionUrlParam) =>
 // Note !! This concept of storing lists of elements inside of an object instead of an array
 //    => is called : "Data normalization"
 // =--> we will convert "shop.data.js" from an array -> to an object
+
+// Note 1 !!! below add rows for redux-thunk implementation
+export const selectIsCollectionFetching = createSelector(
+  [selectShop],
+  (shop) => shop.isFetching
+);
+
+// Note 2 !!! below add rows for redux-thunk implementation
+export const selectIsCollectionsLoaded = createSelector(
+  [selectShop],
+  (shop) => !!shop.collections
+);

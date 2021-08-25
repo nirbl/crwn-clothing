@@ -18,3 +18,10 @@ export const clearItemFromCart = (item) => ({
   type: CartActionTypes.CLEAR_ITEM_FROM_CART,
   payload: item,
 });
+
+// Note 1 - we will create a new action called "clearCart"
+//          -> now we need to make sure that we "dispatch" CLEAR fro our Saga right when we hear
+//            that user action "sign in success"
+export const clearCart = () => ({
+  type: CartActionTypes.CLEAR_CART,
+});

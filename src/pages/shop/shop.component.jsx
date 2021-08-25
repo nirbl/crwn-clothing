@@ -2,21 +2,47 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 
 import { connect } from 'react-redux';
+// Note 7 **** !! because of Redux-Thank - we will !!Add!! below rows block  to "shop.actions"
+// ********      Note 8 !!  -- for "Container Pattern" implement - was !!remove!! below row
+//import { createStructuredSelector } from 'reselect';
 
-import CollectionsOverview from '../../components/collections-overview/collections-overview.component';
-import CollectionPage from '../collection/collection.component';
+// **** Note 2 !!  -- for "Container Pattern" implement - we will !!change!! the below row to
+//import CollectionsOverview from '../../components/collections-overview/collections-overview.component';
+import CollectionsOverviewContainer from '../../components/collections-overview/collections-overview.container';
 
-import {
+// ********      Note 6 !!  -- for "Container Pattern" implement - was !!change!! below row "CollectionPage":
+//import CollectionPage from '../collection/collection.component';
+import CollectionPageContainer from '../collection/collection.container';
+
+// Note 5**** !! because of Redux-Thank - we will remove below rows block  to "shop.actions"
+/* import {
   firestore,
   convertCollectionsSnapshotToMap,
-} from '../../firebase/firebase.utils.js';
+} from '../../firebase/firebase.utils.js'; */
 
-import { updateCollections } from '../../redux/shop/shop.actions';
+// Note 6  **** !! because of Redux-Thank - we will !!Change!! below row to "shop.actions"
+//
+/**** Note 1 - for implementing Redux-Saga - change row below without "...Async"  */
+//import { fetchCollectionsStartAsync } from '../../redux/shop/shop.actions';
+import { fetchCollectionsStart } from '../../redux/shop/shop.actions';
 
-import WithSpinner from '../../components/with-spinner/with-spinner.component';
+// Note 8 && 12 (=add 'selectIsCollectionsLoaded') **** !! because of Redux-Thank - we will !!Add!! below row to "shop.actions"
+// **** Note 6 !! (chapter 191 -for "Container Pattern" !!) implement - we will !! cut !! remove "selectIsCollectionFetching"
+//                 and replace in "collection.container.jsx":
+/* import {
+  // **** Note 5 !!  -- for "Container Pattern" implement - we will !!remove!! all "selectIsCollectionFetching" selector:
+  //selectIsCollectionFetching,
+  selectIsCollectionsLoaded,
+} from '../../redux/shop/shop.selectors'; */
 
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
-const CollectionPageWithSpinner = WithSpinner(CollectionPage);
+// ********      Note 8 !!  -- for "Container Pattern" implement - was !!remove!! below row
+//import WithSpinner from '../../components/with-spinner/with-spinner.component';
+
+// **** Note 1 !!  -- for "Container Pattern" implement - we will delete the below row
+//const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
+
+// ********      Note 7 !!  -- for "Container Pattern" implement - was !!remove!! below row  because we remove above the "CollectionPage" :
+//const CollectionPageWithSpinner = WithSpinner(CollectionPage);
 
 class ShopPage extends React.Component {
   /* constructor(){
@@ -26,21 +52,38 @@ class ShopPage extends React.Component {
       loading: true
     }
   } */
-  state = {
+
+  // Note 3**** !! because of Redux-Thank - we will remove below rows block  to "shop.actions"
+  /* state = {
     loading: true,
-  };
+  }; */
+
   // Note ! instead of implement with constructor for the "loadind we will write:"
   //    => React will know if we in a class component and we write
   //      a state property like so at the top of our component declaration -
   //      that we probably are just invoking state
   //      => so it will under the hood - invokes the "super" for us so that we can
   //      actually leverage the state value
-  unsubscribeFromSnapshot = null;
+
+  // Note 4**** !! because of Redux-Thank - we will remove below 1 row  to "shop.actions"
+  /* unsubscribeFromSnapshot = null; */
 
   componentDidMount() {
-    const { updateCollections } = this.props;
-    const collectionRef = firestore.collection('collections');
+    // Note 11  **** !! because of Redux-Thank - we will change "ComponentDidMount()" declare as below:
+    //
+    /**** Note 2 - for implementing Redux-Saga - change row below without "...Async"  */
+    //const { fetchCollectionsStartAsync } = this.props;
+    const { fetchCollectionsStart } = this.props;
+    // and then we will call it the moment component 'mounts' :
+    /**** Note 3 - for implementing Redux-Saga - change row below without "...Async"  */
+    //fetchCollectionsStartAsync();
+    fetchCollectionsStart();
 
+    // Note 1 *** !! because of Redux-Thank - we will remove-transfer below rows block to "shop.actions"
+    /* const { updateCollections } = this.props;
+    //
+    //
+    const collectionRef = firestore.collection('collections'); */
     // **** Note !!   ***
     // *** ==> !!! Below - 3 rows !!! Here we (use) return Promises
     //         instead of returning this observable style of object
@@ -50,63 +93,81 @@ class ShopPage extends React.Component {
     //        which will it be the exact same as the snapshot object that we're getting back from our BackEnd.
     //        -> the only difference is that instead - now we call ".then(...)"
     //        (= promise) and we pass our snapshot transformation into this ".then(const collectionsMap...)"
-
     /*  this.unsubscribeFromSnapshot = collectionRef.onSnapshot( snapshot => {
      const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
       updateCollections(collectionsMap);
       this.setState({ loading: false }); */
-
-    collectionRef.get().then((snapshot) => {
+    //
+    //
+    //
+    // Note 2 **** !! because of Redux-Thank - we will remove-transfer below rows block  to "shop.actions"
+    /* collectionRef.get().then((snapshot) => {
       const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
       updateCollections(collectionsMap);
-      this.setState({ loading: false });
-
-      // *****  Note!!!  ****
-      // *****    here instead we making  Making REST calls
-      // *****    we use jere native fetch('...') API by: (from firesore docs)
-      // *****    https://firestore.googleapis.com/v1/projects/YOUR_PROJECT_ID/databases/(default)/documents/
-      // *****    && (Project ID :)  "crwn-db-8fbc2"
-      // ******   => then we're going to get our collections
-      // ******    ".../documents/++ collections" - because we want whole the collection - "collections"
-      // ****** -> we chain with "then.(response => response.json())" => we have to convert our response to json
-
-      /* fetch(
+      this.setState({ loading: false }); */
+    // *****  Note!!!  ****
+    // *****    here instead we making  Making REST calls
+    // *****    we use jere native fetch('...') API by: (from firesore docs)
+    // *****    https://firestore.googleapis.com/v1/projects/YOUR_PROJECT_ID/databases/(default)/documents/
+    // *****    && (Project ID :)  "crwn-db-8fbc2"
+    // ******   => then we're going to get our collections
+    // ******    ".../documents/++ collections" - because we want whole the collection - "collections"
+    // ****** -> we chain with "then.(response => response.json())" => we have to convert our response to json
+    /* fetch(
       'https://firestore.googleapis.com/v1/projects/crwn-db-8fbc2/databases/(default)/documents/collections'
     )
       .then((response) => response.json())
       .then((collections) => console.log(collections)); */
-
-      //console.log(collectionsMap);
-      //console.log(snapshot);
-
-      // Note !! now when we have our state (above), we are just going to make
-      //    sure that after our update collections is called - we'll just call
-      //    this, "this.state" where loading equals false
-      //this.setState({ loading: false });
-    });
+    //console.log(collectionsMap);
+    //console.log(snapshot);
+    // Note !! now when we have our state (above), we are just going to make
+    //    sure that after our update collections is called - we'll just call
+    //    this, "this.state" where loading equals false
+    //this.setState({ loading: false });
+    //});
   }
   render() {
+    // Note 9  **** !! because of Redux-Thank - we will change/add "(isCollectionFetching)" declare as below:
+    // **** Note 4 !!  -- for "Container Pattern" implement - we will !!change!! the below row to
+    //const { match, isFetchingCollections, isCollectionsLoaded } = this.props;
+
+    // Note 10  **** !! because of Redux-Thank - we will !!remove/change" below row to "isCollectionsLoaded"
+    //const { match, isCollectionsLoaded } = this.props;
     const { match } = this.props;
-    const { loading } = this.state;
+
+    //
+    // Note 5**** !! because of Redux-Thank - we will remove below 1 row  to "shop.actions"
+    /* const { loading } = this.state; */
     return (
       <div className='shop-page'>
         {/* <Route exact path={`${match.path}`} component={CollectionsOverview} /> */}
         <Route
           exact
           path={`${match.path}`}
-          render={(props) => (
-            <CollectionsOverviewWithSpinner isLoading={loading} {...props} />
-          )}
+          // **** Note 3 !!  -- for "Container Pattern" implement - we will !!switch!! the below rows from "render" property to "component{CollectionsOverviewContainer}"
+          component={CollectionsOverviewContainer}
+          /*  render={(props) => (
+            // Note 10  **** !! because of Redux-Thank - we will change instead of "isLoading={loading}" declare as below:
+            <CollectionsOverviewWithSpinner
+              isLoading={isFetchingCollections}
+              {...props} */
         />
+        {/* )} /> */}
         {/* <Route
           path={`${match.path}/:collectionId`}
           component={CollectionPage}
         /> */}
         <Route
           path={`${match.path}/:collectionId`}
-          render={(props) => (
-            <CollectionPageWithSpinner isLoading={loading} {...props} />
-          )}
+          // ********      Note 9 !!  -- for "Container Pattern" implement - was !!remove!! below block && replace instead with:
+          component={CollectionPageContainer}
+          /*  render={(props) => (
+            // Note 11  **** !! because of Redux-Thank - we will change instead of "isLoading={loading}" declare as below:
+            <CollectionPageWithSpinner
+              isLoading={!isCollectionsLoaded}
+              {...props}
+            />
+          )} */
         />
       </div>
     );
@@ -117,9 +178,22 @@ class ShopPage extends React.Component {
   collections: selectCollections,
 }); */
 
+// Note 9  **** !! because of Redux-Thank - we will declare new "mapStateToProps" as below:
+// ********      Note 9 !!  -- for "Container Pattern" implement - was !!remove!! below block "mapStateToProps":
+/* const mapStateToProps = createStructuredSelector({
+  // **** Note 3 !!  -- for "Container Pattern" implement - we will !!remove!! the below row to
+  //isFetchingCollections: selectIsCollectionFetching,
+  isCollectionsLoaded: selectIsCollectionsLoaded,
+}); */
+
 const mapDispatchToProps = (dispatch) => ({
-  updateCollections: (collectionsMap) =>
-    dispatch(updateCollections(collectionsMap)),
+  // Note 9  **** !! because of Redux-Thank - we will declare new "mapDispatchToProps" below row to "shop.actions"
+  /* updateCollections: (collectionsMap) =>
+    dispatch(updateCollections(collectionsMap)), */
+  //
+  /**** Note 4 - for implementing Redux-Saga - change row below without "...Async"  */
+  //fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync()),
+  fetchCollectionsStart: () => dispatch(fetchCollectionsStart()),
 });
 
 //export default connect(mapStateToProps)(ShopPage);

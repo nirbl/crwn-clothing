@@ -7,7 +7,14 @@ import {
   removeItem,
 } from '../../redux/cart/cart.actions';
 
-import './checkout-item.styles.scss';
+//import './checkout-item.styles.scss';
+import {
+  CheckoutItemContainer,
+  ImageContainer,
+  TextContainer,
+  QuantityContainer,
+  RemoveButtonContainer,
+} from './checkout-item.styles';
 
 //const CheckoutItem = ({ cartItem: { name, imageUrl, price, quantity } }) => (
 // instead of destructuring these values above line -
@@ -19,7 +26,7 @@ import './checkout-item.styles.scss';
 const CheckoutItem = ({ cartItem, clearItem, addItem, removeItem }) => {
   const { name, imageUrl, price, quantity } = cartItem;
   return (
-    <div className='checkout-item'>
+    /* <div className='checkout-item'>
       <div className='image-container'>
         <img src={imageUrl} alt='item' />
       </div>
@@ -37,7 +44,22 @@ const CheckoutItem = ({ cartItem, clearItem, addItem, removeItem }) => {
       <span className='remove-button' onClick={() => clearItem(cartItem)}>
         &#10005;
       </span>
-    </div>
+    </div> */
+    <CheckoutItemContainer>
+      <ImageContainer>
+        <img src={imageUrl} alt='item' />
+      </ImageContainer>
+      <TextContainer>{name}</TextContainer>
+      <QuantityContainer>
+        <div onClick={() => removeItem(cartItem)}>&#10094;</div>
+        <span>{quantity}</span>
+        <div onClick={() => addItem(cartItem)}>&#10095;</div>
+      </QuantityContainer>
+      <TextContainer>{price}</TextContainer>
+      <RemoveButtonContainer onClick={() => clearItem(cartItem)}>
+        &#10005;
+      </RemoveButtonContainer>
+    </CheckoutItemContainer>
   );
 };
 //);
