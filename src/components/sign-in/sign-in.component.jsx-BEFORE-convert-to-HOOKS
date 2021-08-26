@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 // **** Note 2 - implement for Redux-Saga - we have to connect the "googleSignInStart" in a 'dispatch'
 import { connect } from 'react-redux';
 
@@ -22,24 +22,21 @@ import {
   ButtonsBarContainer,
 } from './sign-in.styles.jsx';
 
-// ***Note 3 - converting to Hooks - expend the destructuring
-const SignIn = ({ emailSignInStart, googleSignInStart }) => {
-  const [useCredentials, setCredentials] = useState({
-    email: '',
-    password: '',
-  });
+class SignIn extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const { email, password } = useCredentials;
-  const handleSubmit = async (event) => {
+    this.state = {
+      email: '',
+      password: '',
+    };
+  }
+
+  handleSubmit = async (event) => {
     event.preventDefault();
     // **** Note 6 - implement for Redux-Saga - restructure off - this { email, password } from our props
-
-    // ***Note 1 - converting to Hooks
-    //const { emailSignInStart } = this.props;
-    //const { email, password } = this.state;  // convert to ===> changed and move to above lines (move higher)!!
-    //                                          // because we know we're going to use them in these userCredentials as well
-    //                                        ==> const { email, password } = useCredentials;
-
+    const { emailSignInStart } = this.props;
+    const { email, password } = this.state;
     // **** Note 4 - implement for Redux-Saga - we don't need this "try/catch" block,
     //   -> no more setState.Redux will handle the state from here on out with Sagas.
 
@@ -54,16 +51,9 @@ const SignIn = ({ emailSignInStart, googleSignInStart }) => {
     } */
   };
 
-  const handleChange = (event) => {
+  handleChange = (event) => {
     const { value, name } = event.target;
-
-    // ***Note 2 - converting to Hooks
-    //this.setState({ [name]: value });  // convert to ===>
-    // ----> so all we need to do ais very similar to when we return or reduce our value
-    //      - we want to 'spread in' all of our "userCredentials" and then we're just going to update the value
-    //        that actually needs to be changed
-    //      -- and this will pretty much allow us to use our "handleChange" method the way we have it as well
-    setCredentials({ ...useCredentials, [name]: value });
+    this.setState({ [name]: value });
   };
 
   // *** IMPORTANT NOTE 1 - the below render is deferment as I have before - needs to understand when it was changed and why
@@ -115,50 +105,48 @@ const SignIn = ({ emailSignInStart, googleSignInStart }) => {
       </div>
     );
   } */
-  //render() {
-  // **** Note 4 - implement for Redux-Saga - add destructuring to the main method instead
-  //const { googleSignInStart } = this.props;
-  // ***Note 2 - converting to Hooks - we can also make sure to destructor off the appropriate values - we moved it higher above
-  //                                                    ==> const { email, password } = useCredentials;
-  return (
-    <SignInContainer>
-      <SignInTitle>I already have an account</SignInTitle>
-      <span>Sign in with your email and password</span>
+  render() {
+    // **** Note 4 - implement for Redux-Saga - add destructuring
+    const { googleSignInStart } = this.props;
+    return (
+      <SignInContainer>
+        <SignInTitle>I already have an account</SignInTitle>
+        <span>Sign in with your email and password</span>
 
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          name='email'
-          type='email'
-          handleChange={handleChange}
-          value={email}
-          label='email'
-          required
-        />
-        <FormInput
-          name='password'
-          type='password'
-          value={password}
-          handleChange={handleChange}
-          label='password'
-          required
-        />
-        <ButtonsBarContainer>
-          <CustomButton type='submit'> Sign in </CustomButton>
-          {/* **** Note 4 - implement for Redux-Saga - change instead of {signInWithGoogle} => to the destructuring above of { googleSignInStart }   */}
-          {/* <CustomButton onClick={signInWithGoogle} isGoogleSignIn> */}
-          <CustomButton
-            type='button'
-            onClick={googleSignInStart}
-            isGoogleSignIn
-          >
-            Sign in with Google
-          </CustomButton>
-        </ButtonsBarContainer>
-      </form>
-    </SignInContainer>
-  );
-};
-//}
+        <form onSubmit={this.handleSubmit}>
+          <FormInput
+            name='email'
+            type='email'
+            handleChange={this.handleChange}
+            value={this.state.email}
+            label='email'
+            required
+          />
+          <FormInput
+            name='password'
+            type='password'
+            value={this.state.password}
+            handleChange={this.handleChange}
+            label='password'
+            required
+          />
+          <ButtonsBarContainer>
+            <CustomButton type='submit'> Sign in </CustomButton>
+            {/* **** Note 4 - implement for Redux-Saga - change instead of {signInWithGoogle} => to the destructuring above of { googleSignInStart }   */}
+            {/* <CustomButton onClick={signInWithGoogle} isGoogleSignIn> */}
+            <CustomButton
+              type='button'
+              onClick={googleSignInStart}
+              isGoogleSignIn
+            >
+              Sign in with Google
+            </CustomButton>
+          </ButtonsBarContainer>
+        </form>
+      </SignInContainer>
+    );
+  }
+}
 
 // **** Note 3 - implement for Redux-Saga - add "mapDispatchProps"
 const mapDispatchToProps = (dispatch) => ({
